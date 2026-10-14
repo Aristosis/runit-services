@@ -1,12 +1,17 @@
 #!/bin/sh
 exec 2>&1
-USER="ari"
-HOME="/home/$USER"
-groups="$(id -Gn "$USER" | tr ' ' ':')"
+
+[ -r ./conf ] && . ./conf
+
+: "${USER:=ari}"
+: "${HOME:=/home/$USER}"
+: "${OPTS:=--no-restart}"
 
 export USER HOME
 
 cd "$HOME" || exit 1
 
+groups="$(id -Gn "$USER" | tr ' ' ':')"
+
 exec chpst -u "$USER:$groups" \
-    /usr/bin/syncthing serve --no-restart
+    /usr/bin/syncthing serve "$OPTS"
