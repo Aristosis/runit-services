@@ -1,0 +1,12 @@
+#!/bin/sh
+exec 2>&1
+USER="ari"
+HOME="/home/$USER"
+groups="$(id -Gn "$USER" | tr ' ' ':')"
+
+export USER HOME
+
+cd "$HOME" || exit 1
+
+exec chpst -u "$USER:$groups" \
+    /usr/bin/syncthing serve --no-restart
